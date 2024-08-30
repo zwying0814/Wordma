@@ -1,0 +1,61 @@
+# Node.js 相关忽略文件
+node_modules/
+**/node_modules/
+pnpm-lock.yaml
+npm-debug.log*
+yarn-error.log
+
+# Vite 生成的构建文件
+dist/
+.vite/
+*.log
+
+# 缓存和临时文件
+.DS_Store
+Thumbs.db
+.cache/
+temp/
+tmp/
+
+# IDE/编辑器相关文件
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+**/.idea
+*.http
+
+# Go 相关忽略文件
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# 如果你使用的是 Go Modules
+/go.sum
+/go.mod
+/go/bin/
+**/go.sum
+**/go.mod
+**/go/bin/
+/backend/data/database.bin
+/backend/seed
+
+
+# 忽略编译生成的二进制文件
+**/bin/
+**/obj/
+
+# 忽略前端打包输出
+/apps/admin/dist/
+
+# 忽略日志和环境配置文件
+logs/
+.env
+.env.local
+.env.*.local
