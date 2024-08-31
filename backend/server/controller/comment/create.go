@@ -18,18 +18,12 @@ func HandleCreateComment(c *fiber.Ctx) error {
 	if isOK, resp := utils.ParamsDecode(c, &data); !isOK {
 		return resp
 	}
-	//if strings.TrimSpace(data.Name) == "" {
-	//	return utils.RespError(c, 400, "昵称不能为空", nil)
-	//}
-	//if strings.TrimSpace(data.Email) == "" {
-	//	return utils.RespError(c, 400, "邮箱不能为空", nil)
-	//}
-	//if !utils.ValidateEmail(data.Email) {
-	//	return utils.RespError(c, 400, "邮箱格式不正确", nil)
-	//}
-	//if data.Url != "" && !utils.ValidateURL(data.Url) {
-	//	return utils.RespError(c, 400, "链接格式不正确", nil)
-	//}
+	if !utils.ValidateEmail(data.Email) {
+		return utils.SendError(c, fiber.StatusBadRequest, "邮箱格式不正确")
+	}
+	if data.Url != "" && !utils.ValidateURL(data.Url) {
+		return utils.SendError(c, fiber.StatusBadRequest, "URL格式不正确")
+	}
 	site, err := model.FindSiteByID(data.SiteID)
 	if err != nil {
 		return utils.SendError(c, fiber.StatusBadRequest, "数据库查询错误"+err.Error())
@@ -72,7 +66,13 @@ func HandleCreateComment(c *fiber.Ctx) error {
 			return utils.SendError(c, fiber.StatusBadRequest, "父级评论不允许回复")
 		}
 	}
-
+	// 过滤内容
+	if config.NeedFilter {
+		res, _ := utils.CommentFilter.Validate(data.Name + data.Email + data.Url + data.Content)
+		if !res {
+			return utils.SendError(c, fiber.StatusBadRequest, "内容包含敏感词")
+		}
+	}
 	// 检查这个用户是否存在，不存在需要创建，通过邮箱查询，email作为唯一的标识，用户名可以不同
 	user, err := utils.GetUserByReq(c)
 	if errors.Is(err, utils.ErrTokenNotProvided) {

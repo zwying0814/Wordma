@@ -11,14 +11,10 @@ const onBreakpoint = broken => {
 
 <template>
   <a-layout class="w-screen h-screen">
-    <a-layout-sider
-        breakpoint="lg" class="!bg-white"
-        collapsed-width="0"
-        @collapse="onCollapse"
-        @breakpoint="onBreakpoint"
-    >
+    <a-layout-sider breakpoint="lg" class="!bg-white" collapsed-width="0" @collapse="onCollapse"
+                    @breakpoint="onBreakpoint">
       <div class="logo"/>
-      <Sidebar />
+      <Sidebar/>
     </a-layout-sider>
     <a-layout>
       <a-layout-header class="!px-4 !bg-white">
@@ -27,7 +23,6 @@ const onBreakpoint = broken => {
       <a-layout-content :style="{ margin: '24px 16px 0' }">
         <slot/>
       </a-layout-content>
-
     </a-layout>
   </a-layout>
 </template>

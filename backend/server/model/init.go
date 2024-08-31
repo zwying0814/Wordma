@@ -27,14 +27,9 @@ func InitDatabase() {
 	}
 
 	// 自动迁移数据库
-	err = DB.AutoMigrate(&User{}, &Comment{}, &Site{})
+	err = DB.AutoMigrate(&User{}, &Comment{}, &Site{}, &Post{})
 	if err != nil {
 		panic("数据库迁移失败！")
 		return
 	}
-
-	// 创建默认数据
-	//CreateAdministrator()
-
-	//fmt.Println("数据库初始化成功！")
 }

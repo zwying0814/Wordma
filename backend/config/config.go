@@ -14,6 +14,8 @@ var (
 	DevelopMode    bool
 	DisableLog     bool
 	LogPath        string
+	NeedFilter     bool
+	FilterPath     string
 )
 
 // InitConfigFile 初始化
@@ -36,6 +38,8 @@ func LoadSiteConfig(file *ini.File) {
 
 func LoadCommentConfig(file *ini.File) {
 	NeedModeration = file.Section("comment").Key("NeedModeration").MustBool(false)
+	NeedFilter = file.Section("comment").Key("NeedFilter").MustBool(true)
+	FilterPath = file.Section("comment").Key("FilterPath").MustString("/data/filter.txt")
 }
 
 func LoadSystemConfig(file *ini.File) {
