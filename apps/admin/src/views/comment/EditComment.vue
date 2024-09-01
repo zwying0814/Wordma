@@ -36,7 +36,7 @@ defineExpose({
 });
 const emits = defineEmits(["refresh"]);
 const handleOk =async () => {
-  await alovaBaseUrlInstance.Put(`/api/comment/${commentDataForm.value.ID}`, commentDataForm.value);
+  await alovaBaseUrlInstance.Put(`/comment/${commentDataForm.value.ID}`, commentDataForm.value);
   message.success("修改成功");
   emits("refresh");
   close();

@@ -7,8 +7,8 @@ const router = useRouter();
 const userStore = useUserStore();
 
 const loginFormModel = ref({
-  username: 'admin',
-  password: '123456',
+  username: '',
+  password: '',
 });
 
 const handleSubmit = async () => {
@@ -29,7 +29,7 @@ const handleSubmit = async () => {
       <h1 class="text-3xl font-bold mb-6">📝 Wordma</h1>
     <a-form layout="horizontal" :model="loginFormModel" @submit.prevent="handleSubmit" class="w-72">
       <a-form-item>
-        <a-input v-model:value="loginFormModel.username" size="large" placeholder="admin">
+        <a-input v-model:value="loginFormModel.username" size="large" placeholder="请输入用户名">
           <template #prefix> <UserOutlined /> </template>
         </a-input>
       </a-form-item>
@@ -38,7 +38,7 @@ const handleSubmit = async () => {
             v-model:value="loginFormModel.password"
             size="large"
             type="password"
-            placeholder="a123456"
+            placeholder="请输入密码"
             autocomplete="new-password"
         >
           <template #prefix> <LockOutlined /></template>

@@ -9,7 +9,7 @@ export const useUserStore = defineStore('user', () => {
 // 用户登录
     const login = async (data: LoginUser) => {
         try {
-            const res:UserLoginResponse = await alovaBaseUrlInstance.Post('/api/login', data);
+            const res:UserLoginResponse = await alovaBaseUrlInstance.Post('/login', data);
             token.value = res.data.token
             userInfo.value = res.data.user
             console.log(userInfo.value)

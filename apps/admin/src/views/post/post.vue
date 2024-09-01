@@ -51,7 +51,7 @@ const filterOption = (input: string, option: any) => {
 
 // 加载Post列表
 const requestPosts = async (siteID: string) => {
-  const res: PostListDataResponse = await alovaBaseUrlInstance.Get(`/api/post`, {
+  const res: PostListDataResponse = await alovaBaseUrlInstance.Get(`/post`, {
     params: {
       site_id: siteID,
       limit: 10,

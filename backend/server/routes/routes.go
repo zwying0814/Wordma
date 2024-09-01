@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -15,7 +14,4 @@ func InitRoutes(app *fiber.App) {
 	RegisterPublicRoutes(v1)
 	// 注册后台路由
 	RegisterAdminRoutes(v1)
-
-	fmt.Println("路由初始化成功！")
-
 }

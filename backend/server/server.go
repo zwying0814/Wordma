@@ -1,13 +1,19 @@
 package server
 
 import (
+	"embed"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"net/http"
 	"wordma/config"
 	"wordma/server/model"
 	"wordma/server/routes"
 	"wordma/server/utils"
 )
+
+//go:embed dist/*
+var staticFiles embed.FS
 
 // Bootstrap 启动后端服务
 func Bootstrap() (*fiber.App, error) {
@@ -19,6 +25,12 @@ func Bootstrap() (*fiber.App, error) {
 		StreamRequestBody:  true,
 		EnableIPValidation: true,
 	})
+
+	fb.Use("/", filesystem.New(filesystem.Config{
+		Root:       http.FS(staticFiles),
+		PathPrefix: "/dist",
+		Browse:     true,
+	}))
 
 	// 初始化路由
 	routes.InitRoutes(fb)

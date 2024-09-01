@@ -43,10 +43,10 @@ const loading = ref<boolean>(false);
 const onFinish = async (values: any) => {
   loading.value = true;
   if (isEdit.value) {
-    await alovaBaseUrlInstance.Put(`/api/site/${values.id}`, values)
+    await alovaBaseUrlInstance.Put(`/site/${values.id}`, values)
     message.success('编辑成功');
   } else {
-    await alovaBaseUrlInstance.Post('/api/site', values)
+    await alovaBaseUrlInstance.Post('/site', values)
     message.success('添加成功');
   }
   close();

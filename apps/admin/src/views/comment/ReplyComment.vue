@@ -41,7 +41,7 @@ defineExpose({
 });
 const emits = defineEmits(["refresh"]);
 const handleOk = async () => {
-  await alovaBaseUrlInstance.Post(`/api/comment/`, {
+  await alovaBaseUrlInstance.Post(`/comment/`, {
     name: userStore.userInfo?.Name,
     content: replyContent.value,
     email: userStore.userInfo?.Email,

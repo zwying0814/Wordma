@@ -8,6 +8,7 @@ import router from "@/router";
  * 创建一个Alova实例，带token等信息
  */
 export const alovaBaseUrlInstance = createAlova({
+    baseURL: import.meta.env.VITE_BASE_API,
     beforeRequest(method: Method) {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         if (user.token) {
@@ -21,21 +22,20 @@ export const alovaBaseUrlInstance = createAlova({
                 message.error('登录已过期，请重新登录')
                 localStorage.removeItem('user')
                 return await router.replace('/login')
-
             }
             if (response.status > 200) {
                 message.error(response.statusText)
-                throw new Error(response.statusText);
+                return
             }
             const json = await response.json();
             if (response.status != 200) {
                 message.error(json.message || response.statusText)
                 console.log(response.statusText)
-                throw new Error(response.statusText);
+                return
             }
             if (json.code !== 200) {
                 message.error(json.message)
-                throw new Error(json.message);
+                return
             }
             return json;
         },

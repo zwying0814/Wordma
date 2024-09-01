@@ -33,7 +33,7 @@ const filterOption = (input: string, option: any) => {
 const commentsDataList = ref<CommentDataType[]>([])
 // 加载评论列表
 const requestComments = async (siteID: string) => {
-  const res: CommentResponse = await alovaBaseUrlInstance.Get(`/api/site/comments`, {
+  const res: CommentResponse = await alovaBaseUrlInstance.Get(`/site/comments`, {
     params: {
       site_id: siteID,
       limit: 10,
@@ -102,7 +102,7 @@ const typeConvert = (type: string) => {
 
 // 通过评论
 const passComment = async (commentID: number) => {
-  await alovaBaseUrlInstance.Put(`/api/comment/${commentID}`, {
+  await alovaBaseUrlInstance.Put(`/comment/${commentID}`, {
     type: 'published'
   })
   message.success("评论已通过")
@@ -110,7 +110,7 @@ const passComment = async (commentID: number) => {
 }
 // 删除评论
 const deleteComment = async (commentID: number) => {
-  await alovaBaseUrlInstance.Delete(`/api/comment/${commentID}`)
+  await alovaBaseUrlInstance.Delete(`/comment/${commentID}`)
   message.success("评论已删除")
   await refresh()
 }
