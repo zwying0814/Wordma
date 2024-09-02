@@ -1,7 +1,5 @@
 package dto
 
-import "time"
-
 // CommentDTO 接收前端评论参数
 type CommentDTO struct {
 	Name     string `json:"name" validate:"required"`      // 昵称
@@ -23,7 +21,7 @@ type UpdateCommentDTO struct {
 // ReceiveCommentListDTO 加载评论接收参数
 type ReceiveCommentListDTO struct {
 	PostSlug string `query:"post_slug" json:"post_slug" validate:"required"` // 文章Slug
-	SiteID   uint   `query:"site_id" json:"site_id" validate:"optional"`     // 站点ID
+	SiteID   uint   `query:"site_id" json:"site_id" validate:"required"`     // 站点ID
 
 	Limit  int    `query:"limit" json:"limit" validate:"optional"`                                     // The limit for pagination
 	Offset int    `query:"offset" json:"offset" validate:"optional"`                                   // The offset for pagination
@@ -42,21 +40,21 @@ type ReceiveCommentListBackendDTO struct {
 }
 
 type ResponseCommentListDTO struct {
-	ID        uint                     `json:"id"`
-	Content   string                   `json:"content"`
-	UA        string                   `json:"ua"`
-	IP        string                   `json:"ip"`
-	Region    string                   `json:"region,omitempty"`
-	Type      string                   `json:"type"`
-	Up        int                      `json:"up"`
-	Down      int                      `json:"down"`
-	UserID    uint                     `json:"user_id"`
-	UserName  string                   `json:"user_name"`
-	UserEmail string                   `json:"user_email"`
-	PostSlug  string                   `json:"post_slug"`
-	Parent    uint                     `json:"parent"`
-	CreatedAt time.Time                `json:"created_at"`
-	Replies   []ResponseCommentListDTO `json:"replies,omitempty"` // 子评论的递归结构
+	ID         uint                     `json:"id"`
+	Content    string                   `json:"content"`
+	OS         string                   `json:"os"`
+	Browser    string                   `json:"browser"`
+	Region     string                   `json:"region"`
+	Type       string                   `json:"type"`
+	Up         int                      `json:"up"`
+	Down       int                      `json:"down"`
+	UserID     uint                     `json:"user_id"`
+	UserName   string                   `json:"user_name"`
+	UserAvatar string                   `json:"user_avatar"`
+	PostSlug   string                   `json:"post_slug"`
+	Parent     uint                     `json:"parent"`
+	CreatedAt  string                   `json:"created_at"`
+	Replies    []ResponseCommentListDTO `json:"replies,omitempty"` // 子评论的递归结构
 }
 
 type CommentVoteDTO struct {

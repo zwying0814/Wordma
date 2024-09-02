@@ -16,6 +16,7 @@ var (
 	LogPath        string
 	NeedFilter     bool
 	FilterPath     string
+	Cors           string
 )
 
 // InitConfigFile 初始化
@@ -34,6 +35,7 @@ func LoadSiteConfig(file *ini.File) {
 	AppKey = file.Section("site").Key("AppKey").MustString("F=G*[(m_1*m_2)/(r^2)]")
 	IPDataPath = file.Section("site").Key("IPDataPath").MustString("/data/ip2region.xdb")
 	DatabasePath = file.Section("site").Key("DatabasePath").MustString("/data/database.bin")
+	Cors = file.Section("site").Key("Cors").MustString("*")
 }
 
 func LoadCommentConfig(file *ini.File) {

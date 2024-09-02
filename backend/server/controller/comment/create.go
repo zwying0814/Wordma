@@ -68,9 +68,9 @@ func HandleCreateComment(c *fiber.Ctx) error {
 	}
 	// 过滤内容
 	if config.NeedFilter {
-		res, _ := utils.CommentFilter.Validate(data.Name + data.Email + data.Url + data.Content)
+		res, word := utils.CommentFilter.Validate(data.Name + data.Email + data.Url + data.Content)
 		if !res {
-			return utils.SendError(c, fiber.StatusBadRequest, "内容包含敏感词")
+			return utils.SendError(c, fiber.StatusBadRequest, "内容包含敏感词："+word)
 		}
 	}
 	// 检查这个用户是否存在，不存在需要创建，通过邮箱查询，email作为唯一的标识，用户名可以不同

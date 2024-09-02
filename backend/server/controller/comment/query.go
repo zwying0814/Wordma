@@ -1,7 +1,14 @@
 package comment
 
 import (
+	"crypto/md5"
+	"encoding/hex"
+	"errors"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/mileusna/useragent"
+	"gorm.io/gorm"
+	"strings"
 	"wordma/server/dto"
 	"wordma/server/model"
 	"wordma/server/utils"
@@ -18,20 +25,20 @@ func HandleQueryComments(c *fiber.Ctx) error {
 
 	// 查询站点是否存在
 	site, err := model.FindSiteByID(data.SiteID)
-	if err != nil {
-		return utils.SendError(c, fiber.StatusInternalServerError, "数据库查询出错"+err.Error())
-	}
 	if site == nil {
 		return utils.SendError(c, fiber.StatusBadRequest, "站点不存在")
+	}
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return utils.SendError(c, fiber.StatusInternalServerError, "数据库查询出错"+err.Error())
 	}
 
 	// 查询文章是否存在
 	post, err := model.GetPostBySlug(data.PostSlug)
-	if err != nil {
-		return utils.SendError(c, fiber.StatusInternalServerError, "数据库查询出错"+err.Error())
-	}
 	if post == nil {
 		return utils.SendError(c, fiber.StatusBadRequest, "文章不存在")
+	}
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return utils.SendError(c, fiber.StatusInternalServerError, "数据库查询出错"+err.Error())
 	}
 
 	// 如果站点文章都有，还需要看看站点下有没有这篇文章，没有也要返回错误
@@ -103,21 +110,38 @@ func buildCommentDTO(comment model.Comment) dto.ResponseCommentListDTO {
 		replyDTOs = append(replyDTOs, buildCommentDTO(reply))
 	}
 
+	ua := useragent.Parse(comment.UA)
+
 	return dto.ResponseCommentListDTO{
-		ID:        comment.ID,
-		Content:   comment.Content,
-		UA:        comment.UA,
-		IP:        comment.IP,
-		Region:    comment.Region,
-		Type:      comment.Type,
-		Up:        comment.Up,
-		Down:      comment.Down,
-		UserID:    comment.UserID,
-		UserName:  comment.User.Name,
-		UserEmail: comment.User.Email,
-		PostSlug:  comment.Post.Slug,
-		Parent:    comment.Parent,
-		CreatedAt: comment.CreatedAt,
-		Replies:   replyDTOs,
+		ID:         comment.ID,
+		Content:    comment.Content,
+		Region:     comment.Region,
+		OS:         ua.OS,
+		Browser:    ua.Name,
+		Type:       comment.Type,
+		Up:         comment.Up,
+		Down:       comment.Down,
+		UserID:     comment.UserID,
+		UserName:   comment.User.Name,
+		UserAvatar: getCravatarURL(comment.User.Email, 80),
+		PostSlug:   comment.Post.Slug,
+		Parent:     comment.Parent,
+		CreatedAt:  comment.CreatedAt.Format("2006年1月2日 15:04"),
+		Replies:    replyDTOs,
 	}
+}
+
+// getCravatarURL 生成 Cravatar 头像的 URL
+func getCravatarURL(email string, size int) string {
+	// 将电子邮件地址转为小写并去除空格
+	trimmedEmail := strings.TrimSpace(strings.ToLower(email))
+
+	// 生成 MD5 散列
+	hash := md5.Sum([]byte(trimmedEmail))
+	hashStr := hex.EncodeToString(hash[:])
+
+	// 构建 Cravatar URL
+	cravatarURL := fmt.Sprintf("https://cravatar.cn/avatar/%s?s=%d", hashStr, size)
+
+	return cravatarURL
 }

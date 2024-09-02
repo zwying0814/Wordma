@@ -26,6 +26,12 @@ func Bootstrap() (*fiber.App, error) {
 		EnableIPValidation: true,
 	})
 
+	// 配置 CORS 中间件
+	fb.Use(cors.New(cors.Config{
+		AllowOrigins: config.Cors,
+		AllowHeaders: "*",
+	}))
+
 	fb.Use("/", filesystem.New(filesystem.Config{
 		Root:       http.FS(staticFiles),
 		PathPrefix: "/dist",
@@ -43,16 +49,13 @@ func Bootstrap() (*fiber.App, error) {
 	if config.DevelopMode {
 		// 开发模式，插入一条测试数据
 		err := model.CreateSite(&model.Site{
-			Url:  "test.com",
+			Url:  "https://test.com",
 			Name: "测试",
 		})
 		if err != nil {
 			panic("插入测试数据错误" + err.Error())
 		}
 	}
-
-	// 配置跨域
-	fb.Use(cors.New())
 
 	// 监听端口
 	return fb, fb.Listen(":" + config.Port)

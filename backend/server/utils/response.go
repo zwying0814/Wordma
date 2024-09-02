@@ -23,7 +23,7 @@ func NewResponse(code int, message string, data interface{}) *Response {
 // SendResponse sends a JSON response to the client
 func SendResponse(c *fiber.Ctx, code int, message string, data interface{}) error {
 	response := NewResponse(code, message, data)
-	return c.Status(code).JSON(response)
+	return c.Status(fiber.StatusOK).JSON(response)
 }
 
 // SendSuccess sends a successful JSON response with a default code of 200
