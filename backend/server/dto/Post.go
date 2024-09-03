@@ -6,8 +6,8 @@ type PostVoteDTO struct {
 	VoteType string `json:"vote_type" validate:"required,oneof=up down"`
 }
 
-type PostViewDTO struct {
-	SiteID   uint   `query:"site_id" json:"site_id" validate:"required"` // 站点ID
+type PostDataDTO struct {
+	SiteID   uint   `json:"site_id" validate:"required"` // 站点ID
 	PostSlug string `json:"post_slug" validate:"required"`
 }
 
@@ -15,6 +15,6 @@ type PostViewDTO struct {
 type PostListDTO struct {
 	SiteID uint `query:"site_id" json:"site_id" validate:"required"` // 站点ID
 
-	Limit  int `query:"limit" json:"limit" validate:"optional"`   // The limit for pagination
-	Offset int `query:"offset" json:"offset" validate:"optional"` // The offset for pagination
+	PageNumber int `query:"page_number" json:"page_number" validate:"optional"`
+	PageSize   int `query:"page_size" json:"page_size" validate:"optional"`
 }

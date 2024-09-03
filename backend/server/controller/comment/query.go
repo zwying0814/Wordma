@@ -5,10 +5,12 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/88250/lute"
 	"github.com/gofiber/fiber/v2"
 	"github.com/mileusna/useragent"
 	"gorm.io/gorm"
 	"strings"
+	"wordma/config"
 	"wordma/server/dto"
 	"wordma/server/model"
 	"wordma/server/utils"
@@ -72,13 +74,13 @@ func HandleQueryComments(c *fiber.Ctx) error {
 		query = query.Order("created_at DESC")
 	}
 
-	if data.Limit > 0 {
-		query = query.Limit(data.Limit)
+	if data.PageSize > 0 {
+		query = query.Limit(data.PageSize)
 	} else {
 		query = query.Limit(10)
 	}
-	if data.Offset > 0 {
-		query = query.Offset(data.Offset)
+	if data.PageNumber > 0 {
+		query = query.Offset((data.PageNumber - 1) * data.PageSize)
 	} else {
 		query = query.Offset(0)
 	}
@@ -90,7 +92,7 @@ func HandleQueryComments(c *fiber.Ctx) error {
 	// 递归加载子评论
 	var commentDTOs []dto.ResponseCommentListDTO
 	for _, comment := range topLevelComments {
-		commentDTOs = append(commentDTOs, buildCommentDTO(comment))
+		commentDTOs = append(commentDTOs, buildCommentDTO(comment, ""))
 	}
 
 	return utils.SendResponse(c, fiber.StatusOK, "查询成功", fiber.Map{
@@ -101,33 +103,40 @@ func HandleQueryComments(c *fiber.Ctx) error {
 }
 
 // 递归函数用于构建 CommentDTO 并加载子评论
-func buildCommentDTO(comment model.Comment) dto.ResponseCommentListDTO {
+func buildCommentDTO(comment model.Comment, parentAuthorName string) dto.ResponseCommentListDTO {
 	var replies []model.Comment
-	model.DB.Where("parent = ?", comment.ID).Find(&replies)
+	model.DB.Preload("User").Preload("Post").Where("parent = ?", comment.ID).Find(&replies)
 
 	var replyDTOs []dto.ResponseCommentListDTO
 	for _, reply := range replies {
-		replyDTOs = append(replyDTOs, buildCommentDTO(reply))
+		replyDTOs = append(replyDTOs, buildCommentDTO(reply, comment.User.Name))
 	}
 
 	ua := useragent.Parse(comment.UA)
 
+	if config.SupportMarkdown {
+		luteEngine := lute.New()
+		comment.Content = luteEngine.MarkdownStr("comment", comment.Content)
+	}
+
 	return dto.ResponseCommentListDTO{
-		ID:         comment.ID,
-		Content:    comment.Content,
-		Region:     comment.Region,
-		OS:         ua.OS,
-		Browser:    ua.Name,
-		Type:       comment.Type,
-		Up:         comment.Up,
-		Down:       comment.Down,
-		UserID:     comment.UserID,
-		UserName:   comment.User.Name,
-		UserAvatar: getCravatarURL(comment.User.Email, 80),
-		PostSlug:   comment.Post.Slug,
-		Parent:     comment.Parent,
-		CreatedAt:  comment.CreatedAt.Format("2006年1月2日 15:04"),
-		Replies:    replyDTOs,
+		ID:           comment.ID,
+		Content:      comment.Content,
+		Region:       comment.Region,
+		OS:           ua.OS,
+		Browser:      ua.Name,
+		Type:         comment.Type,
+		Up:           comment.Up,
+		Down:         comment.Down,
+		UserID:       comment.UserID,
+		UserName:     comment.User.Name,
+		UserAvatar:   getCravatarURL(comment.User.Email, 80),
+		IsAdmin:      comment.User.Role == "admin",
+		PostSlug:     comment.Post.Slug,
+		Parent:       comment.Parent,
+		ParentAuthor: parentAuthorName,
+		CreatedAt:    comment.CreatedAt.Format("2006年1月2日 15:04"),
+		Replies:      replyDTOs,
 	}
 }
 

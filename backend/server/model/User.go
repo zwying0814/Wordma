@@ -89,23 +89,26 @@ func CreateUser(data *User) error {
 // FindOrCreateUser 查找或创建
 func FindOrCreateUser(data dto.CommentDTO) (*User, error) {
 	user, err := GetUserByEmail(data.Email)
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		// 如果没有这个用户，就创建
-		user = &User{
+
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		// 如果查询出现其他错误，直接返回错误
+		return nil, fmt.Errorf("查询用户失败: %w", err)
+	}
+
+	if user == nil || user.Name != data.Name {
+		// 如果用户不存在，或用户名与提交的不同，创建新用户
+		newUser := &User{
 			Name:  data.Name,
 			Email: data.Email,
+			Role:  "visitor",
 		}
-		if err := CreateUser(user); err != nil {
+		if err := CreateUser(newUser); err != nil {
 			return nil, fmt.Errorf("创建用户失败: %w", err)
 		}
-		// 确保返回完整的用户信息
-		user, err := GetUserByEmail(data.Email)
-		if err != nil {
-			return nil, fmt.Errorf("创建用户后查询失败: %w", err)
-		}
-		return user, nil
+		// 返回刚刚创建的用户对象，而不是再进行查询
+		return newUser, nil
 	}
-	// 如果有这个用户，直接返回就好了
+
 	return user, nil
 }
 

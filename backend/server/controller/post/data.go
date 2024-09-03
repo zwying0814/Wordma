@@ -36,13 +36,15 @@ func HandleQueryPost(c *fiber.Ctx) error {
 	query := model.DB.Model(&model.Post{}).Where("site_id = ?", data.SiteID).Select("slug, up, down, read")
 
 	// 分页处理
-	if data.Limit > 0 {
-		query = query.Limit(data.Limit)
+	if data.PageSize > 0 {
+		query = query.Limit(data.PageSize)
 	} else {
 		query = query.Limit(10)
 	}
-	if data.Offset > 0 {
-		query = query.Offset(data.Offset)
+	if data.PageNumber > 0 {
+		query = query.Offset((data.PageNumber - 1) * data.PageSize)
+	} else {
+		query = query.Offset(0)
 	}
 
 	// 执行查询

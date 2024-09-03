@@ -88,9 +88,6 @@ func HandleCreateComment(c *fiber.Ctx) error {
 			"url":     data.Url,
 			"last_ip": ip,
 			"last_ua": ua,
-			"name":    data.Name,
-			"email":   data.Email,
-			"role":    "visitor",
 		})
 		if err != nil {
 			return utils.SendError(c, fiber.StatusBadRequest, "数据库操作错误"+err.Error())

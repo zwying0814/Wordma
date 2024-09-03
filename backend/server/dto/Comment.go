@@ -23,10 +23,10 @@ type ReceiveCommentListDTO struct {
 	PostSlug string `query:"post_slug" json:"post_slug" validate:"required"` // 文章Slug
 	SiteID   uint   `query:"site_id" json:"site_id" validate:"required"`     // 站点ID
 
-	Limit  int    `query:"limit" json:"limit" validate:"optional"`                                     // The limit for pagination
-	Offset int    `query:"offset" json:"offset" validate:"optional"`                                   // The offset for pagination
-	SortBy string `query:"sort_by" json:"sort_by" enums:"date_asc,date_desc,vote" validate:"optional"` // Sort by condition
-	Search string `query:"search" json:"search" validate:"optional"`                                   // Search keywords
+	PageNumber int    `query:"page_number" json:"page_number" validate:"optional"`
+	PageSize   int    `query:"page_size" json:"page_size" validate:"optional"`
+	SortBy     string `query:"sort_by" json:"sort_by" enums:"date_asc,date_desc,vote" validate:"optional"` // Sort by condition
+	Search     string `query:"search" json:"search" validate:"optional"`                                   // Search keywords
 }
 
 // ReceiveCommentListBackendDTO 后端加载评论接收参数
@@ -40,21 +40,23 @@ type ReceiveCommentListBackendDTO struct {
 }
 
 type ResponseCommentListDTO struct {
-	ID         uint                     `json:"id"`
-	Content    string                   `json:"content"`
-	OS         string                   `json:"os"`
-	Browser    string                   `json:"browser"`
-	Region     string                   `json:"region"`
-	Type       string                   `json:"type"`
-	Up         int                      `json:"up"`
-	Down       int                      `json:"down"`
-	UserID     uint                     `json:"user_id"`
-	UserName   string                   `json:"user_name"`
-	UserAvatar string                   `json:"user_avatar"`
-	PostSlug   string                   `json:"post_slug"`
-	Parent     uint                     `json:"parent"`
-	CreatedAt  string                   `json:"created_at"`
-	Replies    []ResponseCommentListDTO `json:"replies,omitempty"` // 子评论的递归结构
+	ID           uint                     `json:"id"`
+	Content      string                   `json:"content"`
+	OS           string                   `json:"os"`
+	Browser      string                   `json:"browser"`
+	Region       string                   `json:"region"`
+	Type         string                   `json:"type"`
+	Up           int                      `json:"up"`
+	Down         int                      `json:"down"`
+	UserID       uint                     `json:"user_id"`
+	UserName     string                   `json:"user_name"`
+	UserAvatar   string                   `json:"user_avatar"`
+	IsAdmin      bool                     `json:"is_admin"`
+	PostSlug     string                   `json:"post_slug"`
+	Parent       uint                     `json:"parent"`
+	ParentAuthor string                   `json:"parent_author"`
+	CreatedAt    string                   `json:"created_at"`
+	Replies      []ResponseCommentListDTO `json:"replies,omitempty"` // 子评论的递归结构
 }
 
 type CommentVoteDTO struct {

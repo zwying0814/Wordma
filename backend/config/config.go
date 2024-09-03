@@ -6,17 +6,19 @@ import (
 )
 
 var (
-	AppKey         string
-	NeedModeration bool
-	IPDataPath     string
-	DatabasePath   string
-	Port           string
-	DevelopMode    bool
-	DisableLog     bool
-	LogPath        string
-	NeedFilter     bool
-	FilterPath     string
-	Cors           string
+	AppKey          string
+	NeedModeration  bool
+	IPDataPath      string
+	DatabasePath    string
+	Port            string
+	DevelopMode     bool
+	DisableLog      bool
+	LogPath         string
+	NeedFilter      bool
+	FilterPath      string
+	Cors            string
+	SupportMarkdown bool
+	EmojiPaths      []string
 )
 
 // InitConfigFile 初始化
@@ -42,6 +44,8 @@ func LoadCommentConfig(file *ini.File) {
 	NeedModeration = file.Section("comment").Key("NeedModeration").MustBool(false)
 	NeedFilter = file.Section("comment").Key("NeedFilter").MustBool(true)
 	FilterPath = file.Section("comment").Key("FilterPath").MustString("/data/filter.txt")
+	SupportMarkdown = file.Section("comment").Key("SupportMarkdown").MustBool(true)
+	EmojiPaths = file.Section("comment").Key("EmojiPaths").Strings("|")
 }
 
 func LoadSystemConfig(file *ini.File) {

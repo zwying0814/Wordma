@@ -45,6 +45,7 @@ tmp/
 **/go/bin/
 /backend/data/database.bin
 /backend/seed
+/backend/data/emoji/**/*
 
 
 # 忽略编译生成的二进制文件

@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterAdminRoutes(api fiber.Router) {
-	auth := api.Group("/", middleware.AuthMiddleware)
+	auth := api.Group("/pp", middleware.AuthMiddleware)
 	// 获取全部站点
 	auth.Get("/sites", site.HandleQuerySites)
 	// 新增站点

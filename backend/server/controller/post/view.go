@@ -11,7 +11,7 @@ import (
 
 func HandlePostView(c *fiber.Ctx) error {
 	var err error
-	var data dto.PostViewDTO
+	var data dto.PostDataDTO
 
 	// 解析并验证传入参数
 	if isOK, resp := utils.ParamsDecode(c, &data); !isOK {
@@ -58,5 +58,7 @@ func HandlePostView(c *fiber.Ctx) error {
 		"post_id":   post.ID,
 		"post_slug": post.Slug,
 		"read":      post.Read,
+		"up":        post.Up,
+		"down":      post.Down,
 	})
 }
