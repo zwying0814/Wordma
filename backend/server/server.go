@@ -37,6 +37,8 @@ func Bootstrap() (*fiber.App, error) {
 		PathPrefix: "/dist",
 		Browse:     true,
 	}))
+	// 允许访问 emoji 目录
+	fb.Static("/emoji", "./data/emoji")
 
 	// 初始化路由
 	routes.InitRoutes(fb)
@@ -55,6 +57,11 @@ func Bootstrap() (*fiber.App, error) {
 		if err != nil {
 			panic("插入测试数据错误" + err.Error())
 		}
+	}
+
+	// 初始化Emoji
+	if len(config.EmojiPaths) > 0 {
+		utils.InitEmoji()
 	}
 
 	// 监听端口

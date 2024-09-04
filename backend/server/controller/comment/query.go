@@ -121,7 +121,7 @@ func buildCommentDTO(comment model.Comment, parentAuthorName string) dto.Respons
 
 	return dto.ResponseCommentListDTO{
 		ID:           comment.ID,
-		Content:      comment.Content,
+		Content:      replaceFlagWithImagePath(comment.Content),
 		Region:       comment.Region,
 		OS:           ua.OS,
 		Browser:      ua.Name,
@@ -153,4 +153,19 @@ func getCravatarURL(email string, size int) string {
 	cravatarURL := fmt.Sprintf("https://cravatar.cn/avatar/%s?s=%d", hashStr, size)
 
 	return cravatarURL
+}
+
+// 解析Content中的emoji符号
+func replaceFlagWithImagePath(input string) string {
+	for _, emoji := range utils.EmojiJson {
+		for _, image := range emoji.Images {
+			if strings.Contains(input, image.Flag) {
+				// 构建完整的 HTML <img> 标签路径
+				imageTag := `<img emoji src="` + emoji.Path + image.Icon + `" alt="` + image.Text + `" />`
+				// 替换 flag 为 HTML <img> 标签
+				input = strings.ReplaceAll(input, image.Flag, imageTag)
+			}
+		}
+	}
+	return input
 }

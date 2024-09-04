@@ -20,6 +20,8 @@ func RegisterPublicRoutes(api fiber.Router) {
 	public.Get("/comment", comment.HandleQueryComments)
 	// 评论点踩
 	public.Post("/comment/vote", comment.HandleCommentVote)
+	// 获取评论表情信息
+	public.Get("/comment/emoji", comment.HandleCommentEmoji)
 
 	// 文章点踩
 	public.Post("/post/vote", post.HandlePostVote)
